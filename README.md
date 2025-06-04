@@ -1,271 +1,96 @@
-Project Name
+Pipeline Processor
+==================
 
-Summary
 
-This project is a Python-based application designed to automate [insert specific task or purpose, e.g., data processing, file monitoring, or task scheduling]. The solution leverages [insert key technologies, e.g., Python, Flask, or specific libraries] to provide a robust and scalable framework for [describe core functionality, e.g., running pipelines, processing data, or generating reports]. The app is modular, easy to set up, and supports notifications via Slack and email for monitoring and alerts.
+Content
+=======
+   
+    * Summary of the solution
+    * How to run the app
+    * Instructions for setting up Slack/email notifications
+    * How this could be extended (more pipelines, config file, real scheduling)
 
-How to Run the App
+     
+Summary of the solution
+=======================
+
+This is a C# .NET console application project to read notices from various gas pipeline websites and send notifications. Based on the notices, it identifies trading signals and sends out emails. 
+The solution leverages C#, .NET 8, Docker, HTMLAgilityPack, MailKit etc, to provide a robust and scalable framework for scraping HTML notices, processing data, and sending emails.
+
+
+How to run the App
+==================
 
 Follow these steps to set up and run the application locally:
 
 Prerequisites
-
-
-
-
-
-Python 3.8 or higher
-
-
-
-pip (Python package manager)
-
-
-
-Git
-
-
-
-(Optional) Virtual environment tool (e.g., venv or virtualenv)
-
-Installation
-
-
-
+    Install Visual Studio 2022 or later with .NET 8 SDK.
+    Ensure you have Docker Desktop installed if you want to run the application in a container.
 
 
 Clone the repository:
-
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-
-
-
-Create and activate a virtual environment:
-
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+    git clone https://github.com/jhaakri/InCommoditiesTechChallenge.git
+    InCommoditiesTechChallenge
+    Prerequisites
 
 
-
-Install dependencies:
-
-pip install -r requirements.txt
-
-
-
-Configure environment variables:
+Build and publish the application:
+    Open the solution in Visual Studio.
+    Restore NuGet packages if prompted.
+    Build the solution (Ctrl + Shift + B).
+    Publish the application locally
 
 
-
-
-
-Copy the .env.example file to .env:
-
-cp .env.example .env
-
-
-
-Update .env with your specific configurations (e.g., API keys, database URLs).
-
+To create a Docker image, you can use the provided Dockerfile. Ensure you have Docker installed and running on your machine.
+    Navigate to the project directory in your terminal.
+    Build the Docker image with the following command (It can be done from within the Visual Studio as well):
+    
+    docker build -t pipeline-processor .
 
 
 Run the application:
-
-python app.py
-
-The app will start on http://localhost:5000 (or the configured port).
-
-Testing
-
-To run tests (if applicable):
-
-pytest tests/
-
-Setting Up Slack/Email Notifications
-
-The application supports sending notifications to Slack and email for events such as pipeline completion or errors.
-
-Slack Notifications
-
-
-
-
-
-Create a Slack App:
-
-
-
-
-
-Go to Slack API and create a new app.
-
-
-
-Enable incoming webhooks and obtain a webhook URL.
-
-
-
-Add the webhook URL to your .env file:
-
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
-
-
-
-Test Slack Notifications:
-
-
-
-
-
-Run the app and trigger a notification event (e.g., pipeline completion).
-
-
-
-Verify that a message appears in the designated Slack channel.
-
-Email Notifications
-
-
-
-
-
-Configure Email Settings:
-
-
-
-
-
-Use an SMTP server (e.g., Gmail, SendGrid).
-
-
-
-Add the following to your .env file:
-
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-specific-password
-EMAIL_RECIPIENT=recipient@example.com
-
-
-
-Test Email Notifications:
-
-
-
-
-
-Trigger a notification event.
-
-
-
-Check the recipient's inbox for the notification email.
-
-Potential Extensions
-
-The project can be extended in several ways to enhance functionality and scalability:
-
-
-
-
-
-Additional Pipelines:
-
-
-
-
-
-Add more data processing or automation pipelines by creating new modules in the pipelines/ directory.
-
-
-
-Implement a pipeline registry to dynamically load and execute pipelines based on user input or configuration.
-
-
-
-Configuration File:
-
-
-
-
-
-Introduce a config.yaml or config.json file to centralize settings (e.g., pipeline schedules, notification preferences).
-
-
-
-Example structure:
-
-pipelines:
-  - name: data_processing
-    schedule: "0 0 * * *" # Daily at midnight
-  - name: report_generation
-    schedule: "0 12 * * 1" # Weekly on Monday
-notifications:
-  slack: true
-  email: true
-
-
-
-Real Scheduling:
-
-
-
-
-
-Integrate a scheduling library like APScheduler or Celery Beat for cron-based task execution.
-
-
-
-Example with APScheduler:
-
-from apscheduler.schedulers.background import BackgroundScheduler
-scheduler = BackgroundScheduler()
-scheduler.add_job(run_pipeline, 'cron', hour=0, minute=0)
-scheduler.start()
-
-
-
-Deploy the app with a task queue (e.g., Celery with Redis) for distributed task scheduling.
-
-
-
-Additional Features:
-
-
-
-
-
-Add a web dashboard using Flask or Django to monitor pipeline status and view logs.
-
-
-
-Implement database integration (e.g., SQLite, PostgreSQL) for persistent storage of pipeline results.
-
-
-
-Enhance notifications with custom templates or additional channels (e.g., Microsoft Teams, SMS).
-
-Contributing
-
-Contributions are welcome! Please fork the repository, create a new branch, and submit a pull request with your changes. Ensure tests pass and follow the coding style in the project.
-
-License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-
-
-//Application should show execution status as console output
-//Configurable pipeline URLs
-
-/*Setup README.md with the following:    
-     * Summary of the solution
-     * How to run the app
-     * Instructions for setting up Slack/email notifications
-     * How this could be extended (more pipelines, config file, real scheduling)
-
-
-//Retry / failure handling
-//Scheduling via cron/Windows Task Scheduler
-*/
+    You can run the application directly from Visual Studio by pressing F5 or Ctrl + F5.
+    If you built a Docker image, run the image from Docker Desktop
+
+
+Instructions for setting up email notifications
+===============================================
+Setup an application account within the email account to use and generate an app-specific password. This is required to allow the application to send emails without using your main account password.
+Set the correct values for the following in the appsettings.json file:
+
+    "SmtpSettings": {
+        "Server": "smtp.gmail.com",
+        "Port": "587",
+        "Email": "myaccount@gmail.com",
+        "Password": "app password",
+        "UseSSL": true,
+        "EmailRetryTimeout": 500,
+        "EmailRetryCount": 3
+      }  
+
+    "NotificationEmailSettings": {
+        "To": "receiver@gmail.com",
+        "Cc": "",
+        "Bcc": "",
+        "Subject": "Pipeline Notification Alert"
+      }  
+
+
+How this could be extended
+==========================    
+
+This solution provides the structure for a basic project setup to process one pipeline and send email notification. There are many things that can be done to enhance it and make it ready for production. Here are some of the things that should be enhanced:
+    1) Add more pipelines (e.g., different gas pipelines). It consists of adding configuration for the pipeline in appsettings.json file simply by duplicating the config from one of the existing pipeline and updating the configuration values. In addition, a scraper class needs to be added to scrape the Urls in the appsettings.
+    2) More relavent content like segment and volume should be extracted from the notices and used to generate more meaningful notifications.
+    3) Remove credential from the appsettings and store in a secure vault
+    4) Docker settings used is basic and can be enhanced to customize it better
+    5) Add more unit and integration tests to make sure the code coverage is at an acceptable level
+    6) Add additional notification channels (e.g., Slack, Microsoft Teams, SMS)
+    7) The business rules applied in this solution might not be complete, and should be enhanced to cover more scenarios
+    8) Setup a job/task to run the app automatically
+    9) Implement database integration for persistent storage of pipeline results and notifications
+    10) Add more logging mechanisms besides just the console output
+    11) Add a web dashboard using to monitor pipeline status and view logs. 
+    12) Enhance the application to allow running specified pipeline tasks
+    13) SabineScraper class is an example of how to implement a scraper for a pipeline. It can be used as a template to create more scrapers for other pipelines. It is just a template and does not actually get the correct data for the pipeline. the xpath queries need to be adjusted to get this to work.
+    
