@@ -25,8 +25,8 @@ Follow these steps to set up and run the application locally:
 
 Prerequisites
     
-    * Install Visual Studio 2022 or later with .NET 8 SDK.
-    * Ensure you have Docker Desktop installed if you want to run the application in a container.
+1. Install Visual Studio 2022 or later with .NET 8 SDK.
+2. Ensure you have Docker Desktop installed if you want to run the application in a container.
 
 
 Clone repository:
@@ -36,24 +36,24 @@ Clone repository:
 
 Build and publish the application:
 
-    * Open the solution in Visual Studio.
-    * Restore NuGet packages if prompted.
-    * Build the solution (Ctrl + Shift + B).
-    * Publish the application locally
+1. Open the solution in Visual Studio.
+2. Restore NuGet packages if prompted.
+3. Build the solution (Ctrl + Shift + B).
+4. Publish the application locally
 
 
 To create a Docker image, you can use the provided Dockerfile. Ensure you have Docker installed and running on your machine.
     
-    * Navigate to the project directory in your terminal.
-    * Build the Docker image with the following command (It can be done from within the Visual Studio as well):
+1. Navigate to the project directory in your terminal.
+2. Build the Docker image with the following command (It can be done from within the Visual Studio as well):
     
     docker build -t pipeline-processor .
 
 
 Run the application:
 
-    * You can run the application directly from Visual Studio by pressing F5 or Ctrl + F5.
-    * If you built a Docker image, run the image from Docker Desktop
+1. You can run the application directly from Visual Studio by pressing F5 or Ctrl + F5.
+2. If you built a Docker image, run the image from Docker Desktop
 
 
 Instructions for setting up email notifications
