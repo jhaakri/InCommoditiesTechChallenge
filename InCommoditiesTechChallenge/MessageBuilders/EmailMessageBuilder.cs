@@ -26,6 +26,9 @@ namespace InCommoditiesTechChallenge
             {
                 string body = $"<b>Title</b>: {notice.Subject}<br />" +
                               $"<b>Type</b>: {notice.NoticeTypeDescription}<br />" +
+                              $"<b>Posted Date</b>: {notice.PostedDateTime}<br />" +
+                              $"<b>Effective Date Start</b>: {notice.EffectiveStart}<br />" +
+                              $"<b>Effective Date End</b>: {notice.EffectiveEnd}<br />" +
                               $"<b>Affected Pipeline</b>: {pipeline}<br />" +
                               $"<b>Volume</b>: {notice.Volume}<br />" +
                               $"<b>Link</b>: <a href='{notice.NoticeUrl}'>View Notice</a><br /><br />";

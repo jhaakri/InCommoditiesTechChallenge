@@ -46,12 +46,14 @@ namespace InCommoditiesTechChallenge
 
                 _logger.LogInformation($"{allNotices.Count} notices found for {pipelineKey} pipeline.");
 
-                //Posted Date is within the last 3 days
+                
                 //Notice Type description contains at least one of the defined keywords
-                var keywords = new[] { "Force Majeure", "Outage", "Curtailment" };
+                var keywords = pipelineSettings.TradingSignalKeywords?.Split(",")?.ToList() ?? [];
+                var numOfDays = pipelineSettings.TradingSignalNumOfDays; //Posted Date is within the specified number of days
 
-                allNotices = allNotices?.Where(n => n.PostedDateTime >= DateTime.Now.AddDays(-20))?.ToList();
-                allNotices = allNotices?.Where(n => n.NoticeTypeDescription != null && keywords.Any(n.NoticeTypeDescription.Contains))?.ToList();
+                allNotices = allNotices?.Where(n => n.PostedDateTime >= DateTime.Now.AddDays(-numOfDays))?.ToList();
+                allNotices = allNotices?.Where(n => (n.NoticeTypeDescription != null && keywords.Any(n.NoticeTypeDescription.Contains))
+                || (n.Subject != null && keywords.Any(n.Subject.Contains)))?.ToList();
                 
                 if (allNotices == null || !allNotices.Any())
                 {
