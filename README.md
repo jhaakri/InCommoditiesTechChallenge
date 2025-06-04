@@ -7,8 +7,8 @@ Content
    
     * Summary of the solution
     * How to run the app
-    * Instructions for setting up Slack/email notifications
-    * How this could be extended (more pipelines, config file, real scheduling)
+    * Instructions for setting up email notifications
+    * How this could be extended
 
      
 Summary of the solution
@@ -24,33 +24,36 @@ How to run the App
 Follow these steps to set up and run the application locally:
 
 Prerequisites
-    Install Visual Studio 2022 or later with .NET 8 SDK.
-    Ensure you have Docker Desktop installed if you want to run the application in a container.
+    
+    * Install Visual Studio 2022 or later with .NET 8 SDK.
+    * Ensure you have Docker Desktop installed if you want to run the application in a container.
 
 
-Clone the repository:
+Clone repository:
+
     git clone https://github.com/jhaakri/InCommoditiesTechChallenge.git
-    InCommoditiesTechChallenge
-    Prerequisites
 
 
 Build and publish the application:
-    Open the solution in Visual Studio.
-    Restore NuGet packages if prompted.
-    Build the solution (Ctrl + Shift + B).
-    Publish the application locally
+
+    * Open the solution in Visual Studio.
+    * Restore NuGet packages if prompted.
+    * Build the solution (Ctrl + Shift + B).
+    * Publish the application locally
 
 
 To create a Docker image, you can use the provided Dockerfile. Ensure you have Docker installed and running on your machine.
-    Navigate to the project directory in your terminal.
-    Build the Docker image with the following command (It can be done from within the Visual Studio as well):
+    
+    * Navigate to the project directory in your terminal.
+    * Build the Docker image with the following command (It can be done from within the Visual Studio as well):
     
     docker build -t pipeline-processor .
 
 
 Run the application:
-    You can run the application directly from Visual Studio by pressing F5 or Ctrl + F5.
-    If you built a Docker image, run the image from Docker Desktop
+
+    * You can run the application directly from Visual Studio by pressing F5 or Ctrl + F5.
+    * If you built a Docker image, run the image from Docker Desktop
 
 
 Instructions for setting up email notifications
@@ -80,17 +83,18 @@ How this could be extended
 ==========================    
 
 This solution provides the structure for a basic project setup to process one pipeline and send email notification. There are many things that can be done to enhance it and make it ready for production. Here are some of the things that should be enhanced:
-    1) Add more pipelines (e.g., different gas pipelines). It consists of adding configuration for the pipeline in appsettings.json file simply by duplicating the config from one of the existing pipeline and updating the configuration values. In addition, a scraper class needs to be added to scrape the Urls in the appsettings.
-    2) More relavent content like segment and volume should be extracted from the notices and used to generate more meaningful notifications.
-    3) Remove credential from the appsettings and store in a secure vault
-    4) Docker settings used is basic and can be enhanced to customize it better
-    5) Add more unit and integration tests to make sure the code coverage is at an acceptable level
-    6) Add additional notification channels (e.g., Slack, Microsoft Teams, SMS)
-    7) The business rules applied in this solution might not be complete, and should be enhanced to cover more scenarios
-    8) Setup a job/task to run the app automatically
-    9) Implement database integration for persistent storage of pipeline results and notifications
-    10) Add more logging mechanisms besides just the console output
-    11) Add a web dashboard using to monitor pipeline status and view logs. 
-    12) Enhance the application to allow running specified pipeline tasks
-    13) SabineScraper class is an example of how to implement a scraper for a pipeline. It can be used as a template to create more scrapers for other pipelines. It is just a template and does not actually get the correct data for the pipeline. the xpath queries need to be adjusted to get this to work.
+
+1. Add more pipelines (e.g., different gas pipelines). It consists of adding configuration for the pipeline in appsettings.json file simply by duplicating the config from one of the existing pipeline and updating the configuration values. In addition, a scraper class needs to be added to scrape the Urls in the appsettings.
+2. More relavent content like segment and volume should be extracted from the notices and used to generate more meaningful notifications.
+3. Remove credential from the appsettings and store in a secure vault
+4. Docker settings used is basic and can be enhanced to customize it better
+5. Add more unit and integration tests to make sure the code coverage is at an acceptable level
+6. Add additional notification channels (e.g., Slack, Microsoft Teams, SMS)
+7. The business rules applied in this solution might not be complete, and should be enhanced to cover more scenarios
+8. Setup a job/task to run the app automatically
+9. Implement database integration for persistent storage of pipeline results and notifications
+10. Add more logging mechanisms besides just the console output
+11. Add a web dashboard using to monitor pipeline status and view logs.
+12. Enhance the application to allow running specified pipeline tasks
+13. SabineScraper class is an example of how to implement a scraper for a pipeline. It can be used as a template to create more scrapers for other pipelines. It is just a template and does not actually get the correct data for the pipeline. the xpath queries need to be adjusted to get this to work.
     
