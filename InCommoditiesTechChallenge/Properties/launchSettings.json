@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "InCommoditiesTechChallenge": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
