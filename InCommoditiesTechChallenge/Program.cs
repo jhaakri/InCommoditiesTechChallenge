@@ -30,10 +30,11 @@ serviceCollection.AddSingleton<IConfiguration>(configuration);
 serviceCollection.AddTransient<IDataFetcher, DataFetcher>();
 serviceCollection.AddTransient<IMimeMessageBuilder, MimeMessageBuilder>();
 serviceCollection.AddTransient<IEmailNotificationSender, EmailNotificationSender>();
-serviceCollection.AddTransient<ISmtpClient, SmtpClient>();
-serviceCollection.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information));
+serviceCollection.AddScoped<ISmtpClient, SmtpClient>();
 serviceCollection.AddTransient<IScraper<AnrScraper>, AnrScraper>();
 serviceCollection.AddTransient<IScraper<SabineScraper>, SabineScraper>();
+
+serviceCollection.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information));
 
 var serviceProvider = serviceCollection.BuildServiceProvider();
 

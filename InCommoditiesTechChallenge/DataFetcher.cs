@@ -14,14 +14,14 @@ namespace InCommoditiesTechChallenge
     public class DataFetcher : IDataFetcher
     {
         private readonly ILogger<DataFetcher> _logger;
-        private AppSettingsModel _appSettings;
+        private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
         private IScraper<AnrScraper> _anrScraper;
         private IScraper<SabineScraper> _sabineScraper;        
 
         public DataFetcher(ILogger<DataFetcher> logger, IConfiguration configuration, IScraper<AnrScraper> anrScraper, IScraper<SabineScraper> sabineScraper)
         {
-            _appSettings = configuration.Get<AppSettingsModel>() ?? throw new ArgumentNullException(nameof(configuration), "configuration cannot be null");
+            _configuration= configuration;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null");
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
@@ -31,9 +31,21 @@ namespace InCommoditiesTechChallenge
 
         public async Task<List<Notice>> FetchDataAsync(string pipelineKey)
         {
+            var appSettings = _configuration.Get<AppSettingsModel>();
+
+            if (appSettings == null || appSettings.PipelineSettings == null)
+            {
+                _logger.LogError("Application settings are not configured correctly.");
+                throw new InvalidOperationException("Application settings are not configured correctly.");
+            }
+
             var allNoticeList = new List<Notice>();
 
-            var pipelineSettings = _appSettings.PipelineSettings[pipelineKey];
+            if (!appSettings.PipelineSettings.TryGetValue(pipelineKey, out var pipelineSettings) || pipelineSettings == null)
+            {
+                _logger.LogWarning($"Pipeline {pipelineKey ?? ""} is not configured correctly.");
+                return allNoticeList;
+            }
 
             if (pipelineSettings.EbbUrls == null || !pipelineSettings.EbbUrls.Any())
             {

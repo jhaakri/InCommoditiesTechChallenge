@@ -15,13 +15,13 @@ namespace InCommoditiesTechChallenge.NotificationSenders
     public class EmailNotificationSender: IEmailNotificationSender
     {
         private ISmtpClient _smtpClient;   
-        private SmtpConfig _smptconfig;
+        private IConfiguration _configuration;
         private ILogger<EmailNotificationSender> _logger;
 
         public EmailNotificationSender(ILogger<EmailNotificationSender> logger, ISmtpClient smtpClient, IConfiguration configuration)
         {
             _smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient), "SmtpClient cannot be null");
-            _smptconfig = configuration?.Get<AppSettingsModel>()?.SmtpSettings ?? throw new ArgumentNullException(nameof(smtpClient), "SmtpSettings could not be found");
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), "Configuration cannot be null");
             _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null");
         }
 
@@ -30,31 +30,61 @@ namespace InCommoditiesTechChallenge.NotificationSenders
             // Email cannot be sent if no recipients are specified
             if (message.To?.Any() != true)
             {
+                _logger.LogWarning("No recipients specified for the email. Email will not be sent.");
                 return false;
             }                       
-                           
-            _smtpClient.Connect(_smptconfig.Server, _smptconfig.Port, _smptconfig.enableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
-            _smtpClient.Authenticate(_smptconfig.Email, _smptconfig.Password);
+                     
+            var smtpConfig = _configuration.GetSection("SmtpSettings")?.Get<SmtpConfig>();
 
+            if (smtpConfig == null)
+            {
+                _logger.LogError("SMTP configuration is not set in the application settings.");
+                return false;
+            }
+
+            _smtpClient.Connect(smtpConfig.Server, smtpConfig.Port, smtpConfig.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+            _smtpClient.Authenticate(smtpConfig.Email, smtpConfig.Password);
+           
             var retryAttempts = 0;
-            try
+            var maxAttempts = smtpConfig.EmailRetryCount > 0 ? smtpConfig.EmailRetryCount : 1;
+            Exception? lastException = null;
+
+            for (; retryAttempts < maxAttempts; retryAttempts++)
             {
-                await _smtpClient.SendAsync(message);
-                _smtpClient.Disconnect(true);
-            }
-            catch(Exception ex)
-            {
-                //If email fails to send, retry it based on retry count and timeout specified in the appsettings
-                retryAttempts++;
-                if(retryAttempts>= _smptconfig.EmailRetryCount)
+                try
                 {
-                    _logger.LogError($"Failed to send email after {retryAttempts} attempts: {ex.Message}");
-                    throw;
+                    if (!_smtpClient.IsConnected)
+                    {
+                        await _smtpClient.ConnectAsync(
+                            smtpConfig.Server,
+                            smtpConfig.Port,
+                            smtpConfig.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None
+                        );
+                    }
+
+                    if (!_smtpClient.IsAuthenticated)
+                    {
+                        await _smtpClient.AuthenticateAsync(smtpConfig.Email, smtpConfig.Password);
+                    }
+
+                    await _smtpClient.SendAsync(message);
+                    await _smtpClient.DisconnectAsync(true);
+                    return true;
                 }
-                await Task.Delay(_smptconfig.EmailRetryTimeout);
+                catch (Exception ex)
+                {
+                    lastException = ex;
+                    _logger.LogWarning($"Attempt {retryAttempts + 1} to send email failed: {ex.Message}");
+
+                    if (retryAttempts < maxAttempts - 1)
+                    {
+                        await Task.Delay(smtpConfig.EmailRetryTimeout);
+                    }
+                }
             }
 
-            return true;            
+            _logger.LogError($"Failed to send email after {retryAttempts} attempts: {lastException?.Message}");
+            return false;          
         }
     }
 }

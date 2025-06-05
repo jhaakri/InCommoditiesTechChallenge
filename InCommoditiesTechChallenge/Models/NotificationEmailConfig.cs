@@ -3,7 +3,7 @@ namespace InCommoditiesTechChallenge.Models
 {
     public class NotificationEmailConfig
     {
-        public required string From { get; set; }
+        public string From { get; set; }
         public required string To { get; set; }
         public string? Cc { get; set; }
         public string? Bcc { get; set; }

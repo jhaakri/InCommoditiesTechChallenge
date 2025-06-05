@@ -66,8 +66,10 @@ namespace InCommoditiesTechChallenge
                 //Send email notification
                 var notificationEmailSettings = _appSettings?.NotificationEmailSettings 
                     ?? throw new ArgumentNullException("EmailNotification settings not configured correctly in PipelineSettings section of appsettings.json");
+                var smptConfig = _appSettings?.SmtpSettings
+                    ?? throw new ArgumentNullException("SmtpSettings not configured correctly in appsettings.json");
 
-                _mimeMessageBuilder.BuildFrom(notificationEmailSettings.From);
+                _mimeMessageBuilder.BuildFrom(smptConfig.Email);
                 _mimeMessageBuilder.BuildTo(notificationEmailSettings.To?.Split(",")?.ToList());
                 _mimeMessageBuilder.BuildSubject(notificationEmailSettings.Subject);
                 _mimeMessageBuilder.BuildBody(pipelineSettings.Name?? pipelineKey, allNotices);
